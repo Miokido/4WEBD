@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  ### Symfony User Service ###
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    volumes:
+      - ./user-service:/var/www
+    environment:
+      DATABASE_URL: "mysql://user:password@db_user:3306/user_service"
+    depends_on:
+      - db_user
+    ports:
+      - "8000:80" # Accessible via http://localhost:8000
+
+  ### Base de données MySQL ###
+  db_user:
+    image: mysql:8
+    container_name: db_user
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_service
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  ### Interface web pour la base de données ###
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8081:8080" # Accessible via http://localhost:8081
+
+  ### Message Broker RabbitMQ ###
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Port AMQP pour la communication
+      - "15672:15672" # Interface UI : http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
