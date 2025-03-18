@@ -2,6 +2,16 @@ version: '3.8'
 
 services:
   ### Symfony User Service ###
+  api-gateway:
+    image: nginx:latest
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user-service
+
   user-service:
     build:
       context: ./user-service
@@ -14,7 +24,7 @@ services:
     depends_on:
       - db_user
     ports:
-      - "8000:80" # Accessible via http://localhost:8000
+      - "8001:80" # Accessible via http://localhost:8000
 
   ### Base de données MySQL ###
   db_user:
