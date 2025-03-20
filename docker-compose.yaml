@@ -14,11 +14,11 @@ services:
 
   user-service:
     build:
-      context: ./user-service
+      context: ./user_service
       dockerfile: Dockerfile
     container_name: user-service
     volumes:
-      - ./user-service:/var/www
+      - ./user_service:/var/www
     environment:
       DATABASE_URL: "mysql://user:password@db_user:3306/user_service"
     depends_on:
